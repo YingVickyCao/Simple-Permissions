@@ -1,4 +1,4 @@
-package ying.cao.simplepermissions;
+package ying.cao.simplepermissions.example;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -1,17 +1,17 @@
 package ying.cao.simplepermissions.example;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import ying.cao.simplepermissions.IGrantResult;
-import ying.cao.simplepermissions.IRationaleClickListener;
-import ying.cao.simplepermissions.IRequestResult;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import ying.cao.simplepermissions.IPermissionsResult;
+import ying.cao.simplepermissions.IRationaleOnClickListener;
+import ying.cao.simplepermissions.IRequestPermissionsCallback;
 import ying.cao.simplepermissions.SimplePermissions;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,25 +21,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.requestRuntimePermission).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        findViewById(R.id.requestRuntimePermission).setOnClickListener(v -> {
 
-            }
         });
     }
 
     private void requestRuntimePermission() {
         SimplePermissions simplePermissions = new SimplePermissions(this);
-        simplePermissions.request(new IRequestResult() {
+        simplePermissions.request(new IRequestPermissionsCallback() {
             @Override
-            public void showRationaleContextUI(IRationaleClickListener rationaleOnClickListener) {
+            public void showRationaleContextUI(IRationaleOnClickListener rationaleOnClickListener) {
                 Log.d(SimplePermissions.TAG, "showRationaleContextUI: ");
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Request permission").setMessage("Permission Audio / SD")
                         .setPositiveButton(getString(R.string.ok), (dialog, which) -> rationaleOnClickListener.clickOK())
-                        .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {})
-                        .setNeutralButton(getString(R.string.skip), (dialog, which) -> {}).create().show();
+                        .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
+                        })
+                        .setNeutralButton(getString(R.string.skip), (dialog, which) -> {
+                        }).create().show();
             }
 
             @Override
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void requestPermission(SimplePermissions simplePermissions, final String... permissions) {
-        simplePermissions.request(new IGrantResult() {
+        simplePermissions.request(new IPermissionsResult() {
             @Override
             public void granted() {
                 Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();

@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "SimplePermissions"
-include ':app'
+include ':example'
 include ':lib'

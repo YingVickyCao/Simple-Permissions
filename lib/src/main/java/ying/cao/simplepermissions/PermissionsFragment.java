@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Map;
 
-public class PermissionsFragment extends Fragment {
+class PermissionsFragment extends Fragment {
     private static final String TAG = "PermissionsFragment";
     private boolean mLogging = true;
 

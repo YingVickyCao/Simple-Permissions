@@ -3,15 +3,12 @@ package ying.cao.simplepermissions.example;
 import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ying.cao.simplepermissions.IPermissionsResult;
-import ying.cao.simplepermissions.IRationaleOnClickListener;
-import ying.cao.simplepermissions.IRequestPermissionsCallback;
 import ying.cao.simplepermissions.SimplePermissions;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,13 +25,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestRuntimePermission() {
         SimplePermissions simplePermissions = new SimplePermissions(this);
-        simplePermissions.request(new IRequestPermissionsCallback() {
+        simplePermissions.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback() {
             @Override
-            public void showRationaleContextUI(IRationaleOnClickListener rationaleOnClickListener) {
+            public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
                 Log.d(SimplePermissions.TAG, "showRationaleContextUI: ");
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Request permission").setMessage("Permission Audio / SD")
-                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> rationaleOnClickListener.clickOK())
+                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> rationaleOnClickListener.onClick())
                         .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
                         })
                         .setNeutralButton(getString(R.string.skip), (dialog, which) -> {
@@ -76,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void requestPermission(SimplePermissions simplePermissions, final String... permissions) {
-        simplePermissions.request(new IPermissionsResult() {
+        simplePermissions.request(new SimplePermissions.IPurePermissionCallback() {
             @Override
             public void granted() {
                 Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();

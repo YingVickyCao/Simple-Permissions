@@ -2,49 +2,132 @@ package ying.cao.simplepermissions;
 
 import android.content.pm.PackageManager;
 
+import androidx.annotation.IntDef;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-public class SimplePermissions implements IPermissionTools {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+
+public class SimplePermissions {
     public static final String TAG = "SimplePermissions";
 
     private final FragmentActivity mActivity;
     private final PermissionsFragment mPermissionsFragment;
+
+    private final String PERMISSION_NOT_VALID = "No permissions to request";
+
+    @IntDef({SHOULD, NEVER, ALWAYS})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Rationale {
+    }
+
+    /**
+     * When request unrequested permissions, show the rational context UI to user if should.
+     * This is the default and also recommended behaviour.
+     */
+    public static final int SHOULD = 0x00000000;
+
+    /**
+     * When request unrequested permissions, never show the rational context UI to user because the permission is not important.
+     */
+    public static final int NEVER = 0x00000004;
+
+    /**
+     * When request unrequested permissions, always show the rational context UI to user because you think the permission is very important, you want to explain each time.
+     */
+    public static final int ALWAYS = 0x00000008;
+
+    public interface IPermissionCallback {
+        default void showRationaleContextUI(OnRationaleClickListener callback) {
+        }
+
+        void granted();
+
+        default void denied() {
+        }
+    }
+
+    public interface IPurePermissionCallback {
+        void granted();
+
+        default void denied() {
+        }
+    }
+
+    public interface OnRationaleClickListener {
+        /**
+         * Called when click ok on Rationale UI
+         */
+        void onClick();
+    }
+
 
     public SimplePermissions(FragmentActivity activity) {
         mActivity = activity;
         mPermissionsFragment = getRxPermissionsFragment(activity);
     }
 
-    @Override
-    public void request(IRequestPermissionsCallback callback, String... permissions) {
-        request(false, callback, permissions);
+    public void request(IPermissionCallback callback, String... permissions) {
+        request(SHOULD, callback, permissions);
     }
 
-    @Override
-    public void request4AlwaysRationale(IRequestPermissionsCallback callback, String... permissions) {
-        request(true, callback, permissions);
+    class InvalidPermissions extends RuntimeException {
+        public InvalidPermissions(String message) {
+            super(message);
+        }
     }
 
-    @Override
-    public void request4IgnoreRationale(IPermissionsResult callback, String... permissions) {
+    public void request(@Rationale int rationaleBehaviour, IPermissionCallback callback, String... permissions) {
+        if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
+            throw new InvalidPermissions(PERMISSION_NOT_VALID);
+        }
         try {
             if (isGranted(permissions)) {
                 callback.granted();
                 return;
             }
-            requestMultiplePermissions(callback, permissions);
+            if (ALWAYS == rationaleBehaviour || (SHOULD == rationaleBehaviour && shouldShowRequestPermissionRationale(permissions))) {
+                callback.showRationaleContextUI(() -> doRequestPermissions(callback, permissions));
+                return;
+            }
+            doRequestPermissions(callback, permissions);
         } catch (Exception ex) {
-            callback.error(ex, permissions);
+            mPermissionsFragment.log(Arrays.stream(permissions).toArray().toString() + ",ex:" + ex);
         }
     }
 
-    @Override
+    private void doRequestPermissions(IPermissionCallback callback, String... permissions) {
+        request(new IPurePermissionCallback() {
+            @Override
+            public void granted() {
+                callback.granted();
+            }
+
+            @Override
+            public void denied() {
+                callback.denied();
+            }
+        }, permissions);
+    }
+
+    public void request(IPurePermissionCallback callback, final String... permissions) {
+        if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
+            throw new InvalidPermissions(PERMISSION_NOT_VALID);
+        }
+        try {
+            requestPermissions(callback, permissions);
+        } catch (Exception ex) {
+            mPermissionsFragment.log(permissions.toString() + ",ex:" + ex.toString());
+        }
+    }
+
     public boolean isGranted(final String... permissions) {
-        if (permissions == null) {
-            throw new RuntimeException("permissions is null");
+        if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
+            throw new InvalidPermissions(PERMISSION_NOT_VALID);
         }
         for (String permission : permissions) {
             if (!isGranted(permission)) {
@@ -54,87 +137,49 @@ public class SimplePermissions implements IPermissionTools {
         return true;
     }
 
-    @Override
-    public boolean shouldShowRequestPermissionRationale(final String... permissions) {
-        for (String p : permissions) {
-            if (shouldShowPermissionRequestPermissionRationale(p)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void request(IPermissionsResult callback, final String... permissions) {
-        try {
-            requestMultiplePermissions(callback, permissions);
-        } catch (Exception ex) {
-            callback.error(ex, permissions);
-        }
-    }
-
     private PermissionsFragment getRxPermissionsFragment(FragmentActivity activity) {
-        PermissionsFragment permissionsFragment = findPermissionsFragment(activity);
-        boolean isNewInstance = (permissionsFragment == null);
+        PermissionsFragment fragment = findPermissionsFragment(activity);
+        boolean isNewInstance = (fragment == null);
         if (isNewInstance) {
-            permissionsFragment = new PermissionsFragment();
+            fragment = new PermissionsFragment();
             FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(permissionsFragment, TAG).commitAllowingStateLoss();
+            fragmentManager.beginTransaction().add(fragment, TAG).commitAllowingStateLoss();
             fragmentManager.executePendingTransactions();
         }
-        return permissionsFragment;
+        return fragment;
     }
 
     private PermissionsFragment findPermissionsFragment(FragmentActivity activity) {
         return (PermissionsFragment) activity.getSupportFragmentManager().findFragmentByTag(TAG);
     }
 
-    private void request(boolean isAlwaysRationale, IRequestPermissionsCallback callback, final String... permissions) {
-        try {
-            if (isGranted(permissions)) {
-                callback.granted();
-                return;
-            }
-            if (isWillShowRationale(isAlwaysRationale, permissions)) {
-                callback.showRationaleContextUI(new IRationaleOnClickListener() {
-                    @Override
-                    public void clickOK() {
-                        requestMultiplePermissions(callback, permissions);
-                    }
-
-                    @Override
-                    public void clickCancel() {
-                        callback.cancel();
-                    }
-
-                    @Override
-                    public void clickSkip() {
-                        callback.cancel();
-                    }
-                });
-                return;
-            }
-            requestMultiplePermissions(callback, permissions);
-        } catch (Exception ex) {
-            callback.error(ex, permissions);
+    private void requestPermissions(IPurePermissionCallback callback, String... unrequestedPermissions) {
+        if (mPermissionsFragment.isPermissionsEmpty(unrequestedPermissions)) {
+            throw new InvalidPermissions(PERMISSION_NOT_VALID);
         }
-    }
-
-    private boolean isWillShowRationale(boolean isAlwaysRationale, final String... permissions) {
-        return isAlwaysRationale || shouldShowRequestPermissionRationale(permissions);
-    }
-
-    private void requestMultiplePermissions(IPermissionsResult callback, String... unrequestedPermissions) {
-        mPermissionsFragment.setCallback(callback);
-        mPermissionsFragment.requestMultiplePermissions(unrequestedPermissions);
+        mPermissionsFragment.requestPermissions(isGranted -> {
+            if (isGranted) {
+                callback.granted();
+            } else {
+                callback.denied();
+            }
+        }, unrequestedPermissions);
     }
 
     private boolean isGranted(final String permission) {
         return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(mActivity, permission);
     }
 
-    private boolean isRevoked(String permission) {
-        return mActivity.getPackageManager().isPermissionRevokedByPolicy(permission, mActivity.getPackageName());
+    public boolean shouldShowRequestPermissionRationale(final String... permissions) {
+        if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
+            throw new InvalidPermissions(PERMISSION_NOT_VALID);
+        }
+        for (String p : permissions) {
+            if (shouldShowPermissionRequestPermissionRationale(p)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean shouldShowPermissionRequestPermissionRationale(final String permission) {

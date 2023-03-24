@@ -13,38 +13,26 @@ import java.util.Map;
 
 public class PermissionsFragment extends Fragment {
     private static final String TAG = "PermissionsFragment";
-    private boolean mLogging;
+    private boolean mLogging = true;
 
     ActivityResultLauncher<String[]> mResultLauncher;
-    IPermissionsResult mCallback;
+    RequestPermissionResultCallback mCallback;
 
     public void setLogging(boolean logging) {
         mLogging = logging;
     }
 
-    public void setCallback(IPermissionsResult callback) {
-        this.mCallback = callback;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        mResultLauncher = requestPermissions();
+        mResultLauncher = registerPermissionsResult();
         super.onCreate(savedInstanceState);
     }
 
-    public ActivityResultLauncher<String[]> getResultLauncher() {
-        return mResultLauncher;
-    }
-
-    private ActivityResultLauncher<String[]> requestPermissions() {
+    private ActivityResultLauncher<String[]> registerPermissionsResult() {
         return registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
             @Override
             public void onActivityResult(Map<String, Boolean> permissionsResult) {
-                if (isAllGranted(permissionsResult)) {
-                    mCallback.granted();
-                } else {
-                    mCallback.denied();
-                }
+                mCallback.checkResult(isAllGranted(permissionsResult));
             }
         });
     }
@@ -62,15 +50,20 @@ public class PermissionsFragment extends Fragment {
         return true;
     }
 
-    public void requestMultiplePermissions(String... unrequestedPermissions) {
-        if (!isPermissionsNotEmpty(unrequestedPermissions)) {
-            mCallback.error(new Exception("Not permission to request"), unrequestedPermissions);
-            return;
-        }
+    public void requestPermissions(String... unrequestedPermissions) {
         mResultLauncher.launch(unrequestedPermissions);
     }
 
-    private boolean isPermissionsNotEmpty(String[] unrequestedPermissions) {
+    public void requestPermissions(final RequestPermissionResultCallback callback, final String... unrequestedPermissions) {
+        if (isPermissionsEmpty(unrequestedPermissions)) {
+            log("No permission to request");
+            return;
+        }
+        mCallback = callback;
+        mResultLauncher.launch(unrequestedPermissions);
+    }
+
+    boolean isPermissionsEmpty(String[] unrequestedPermissions) {
         return null != unrequestedPermissions && unrequestedPermissions.length > 0;
     }
 
@@ -78,5 +71,9 @@ public class PermissionsFragment extends Fragment {
         if (mLogging) {
             Log.d(SimplePermissions.TAG, message);
         }
+    }
+
+    interface RequestPermissionResultCallback {
+        void checkResult(boolean isGranted);
     }
 }

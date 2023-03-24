@@ -96,7 +96,7 @@ public class SimplePermissions {
             }
             doRequestPermissions(callback, permissions);
         } catch (Exception ex) {
-            mPermissionsFragment.log(Arrays.stream(permissions).toArray().toString() + ",ex:" + ex);
+            mPermissionsFragment.log(Arrays.toString(permissions) + ",ex:" + ex);
         }
     }
 
@@ -121,7 +121,7 @@ public class SimplePermissions {
         try {
             requestPermissions(callback, permissions);
         } catch (Exception ex) {
-            mPermissionsFragment.log(permissions.toString() + ",ex:" + ex.toString());
+            mPermissionsFragment.log(Arrays.toString(permissions) + ",ex:" + ex);
         }
     }
 

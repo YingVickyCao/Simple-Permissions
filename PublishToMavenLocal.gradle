@@ -1,0 +1,33 @@
+apply plugin: 'maven-publish'
+
+android {
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'ying.cao.permissions'
+                artifactId = 'SimplePermissions'
+                version = '1.0'
+            }
+        }
+//        // Publish to a local repository
+//        repositories {
+//            maven {
+//                name = 'myrepo'
+//                url = "${project.buildDir}/repo"
+//            }
+//        }
+    }
+    // Disable publishing test fixtures of release variant
+    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
+    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
+}

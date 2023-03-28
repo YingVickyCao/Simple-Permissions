@@ -4,3 +4,22 @@ plugins {
     id 'com.android.library' version '7.4.0' apply false
     id 'maven-publish'
 }
+
+ext {
+    groupIdValue = 'ying.cao.permissions'
+    artifactIdValue = 'SimplePermissions'
+    versionValue = '0.1'
+
+    libraryNameValue = 'SimplePermissions'
+    libraryDescValue = 'This library allows to request runtime permission'
+
+    licenseName = 'The Apache License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+
+    developerId = 'YingVickyCao'
+    developerName = 'Vicky'
+    developerEmail = 'ying.vicky.cao@outlook.com'
+
+    gitUrl = 'https://github.com/YingVickyCao/SimplePermissions.git'
+    siteUrl = 'https://github.com/YingVickyCao/SimplePermissions'
+}

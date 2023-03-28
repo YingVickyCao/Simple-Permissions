@@ -15,64 +15,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
-
-/**
- * <pre>
- *
- *  Example 1 - when request runtime permission, shows rationale context UI if should show it.
- *
- *      Way 1 :
- *         SimplePermissions simplePermissions = new SimplePermissions(this);
- *         simplePermissions.request(new SimplePermissions.IPermissionCallback() {
- *             @Override
- *             public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
- *                 Log.d(SimplePermissions.TAG, "showRationaleContextUI: ");
- *                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
- *                 builder.setTitle("Request permission").setMessage("Permission Audio / SD")
- *                         .setPositiveButton(getString(R.string.ok), (dialog, which) -> rationaleOnClickListener.onClick())
- *                         .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
- *                         })
- *                         .setNeutralButton(getString(R.string.skip), (dialog, which) -> {
- *                         }).create().show();
- *             }
- *
- *             @Override
- *             public void granted() {
- *                 // TODO:  do your thing after granted permission
- *             }
- *
- *             @Override
- *             public void denied() {
- *                  // Default it is no no need to implement denied method. You can also do something, such as shows a toast to notify user.
- *                 Toast.makeText(MainActivity.this, "Gant failed", Toast.LENGTH_SHORT).show();
- *             }
- *         }, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE);
- *
- *      Way 2 :
- *          SimplePermissions simplePermissions = new SimplePermissions(this);
- *          simplePermissions.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback(){...} , Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE);
- *          ...
- *
- * Example 2 - when request runtime permission, and never show rationale context UI to user
- *
- *      Way 1 :
- *          SimplePermissions simplePermissions = new SimplePermissions(this);
- *          simplePermissions.request(SimplePermissions.NEVER,new SimplePermissions.IPermissionCallback(){...}, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE);
- *          ...
- *
- *      Way 2 :
- *          SimplePermissions simplePermissions = new SimplePermissions(this);
- *          simplePermissions.request(new IPurePermissionCallback{...} ,, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE)
- *           ...
- *
- * Example 3 - when request runtime permission, and always show rationale context UI to user
-
-             SimplePermissions simplePermissions = new SimplePermissions(this);
- *           simplePermissions.request(SimplePermissions.ALWAYS,new SimplePermissions.IPermissionCallback(){...}, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE);
- *
- *
- * </pre>
- */
 public class SimplePermissions {
     public static final String TAG = "SimplePermissions";
 

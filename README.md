@@ -1,5 +1,7 @@
 # SimplePermissions
 
+[![](https://jitpack.io/v/YingVickyCao/SimplePermissions.svg)](https://jitpack.io/#YingVickyCao/SimplePermissions)
+
 This library allows to request runtime permission.
 
 # 1 Setup

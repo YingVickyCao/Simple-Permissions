@@ -32,8 +32,8 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-//    implementation project(path: ':lib')
-    implementation 'ying.cao.permissions:SimplePermissions:0.1@aar'
+    implementation project(path: ':lib')
+//    implementation 'ying.cao.permissions:SimplePermissions:0.1@aar'
 
 
     testImplementation 'junit:junit:4.13.2'

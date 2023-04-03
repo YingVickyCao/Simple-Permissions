@@ -24,9 +24,10 @@ class PermissionsFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        mResultLauncher = registerPermissionsResult();
         super.onCreate(savedInstanceState);
+        mResultLauncher = registerPermissionsResult();
     }
+
 
     private ActivityResultLauncher<String[]> registerPermissionsResult() {
         return registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {

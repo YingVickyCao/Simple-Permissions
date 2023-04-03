@@ -14,7 +14,8 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = artifactIdValue
+
+                groupId = groupIdValue
                 artifactId = artifactIdValue
                 version = versionValue
 
@@ -45,8 +46,8 @@ afterEvaluate {
         }
     }
     // Disable publishing test fixtures of release variant
-    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
-    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
+//    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
+//    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
 }
 
 

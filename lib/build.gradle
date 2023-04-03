@@ -25,9 +25,9 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
-    testFixtures {
-        enable = true
-    }
+//    testFixtures {
+//        enable = true
+//    }
 }
 
 dependencies {

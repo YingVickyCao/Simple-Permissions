@@ -17,7 +17,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'ying.cao.permissions:SimplePermissions:0.1'
+    implementation 'com.github.yingvickycao:SimplePermissions:0.1'
 }
 ```
 

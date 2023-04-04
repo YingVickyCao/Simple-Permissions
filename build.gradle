@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    groupIdValue = 'com.github.yingvickycao'
+    groupIdValue = 'com.github.yingvickycao.simplepermissions'
     artifactIdValue = 'simplepermissions'
     versionValue = '0.1'
 
@@ -16,10 +16,10 @@ ext {
     licenseName = 'The Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
-    developerId = 'YingVickyCao'
+    developerId = 'yingvickycao'
     developerName = 'Vicky'
     developerEmail = 'ying.vicky.cao@outlook.com'
 
-    gitUrl = 'https://github.com/YingVickyCao/SimplePermissions.git'
-    siteUrl = 'https://github.com/YingVickyCao/SimplePermissions'
+    gitUrl = 'https://github.com/yingvickycao/SimplePermissions.git'
+    siteUrl = 'https://github.com/yingvickycao/SimplePermissions'
 }

@@ -6,7 +6,7 @@ plugins {
 }
 
 ext {
-    groupIdValue = 'ying.cao.permissions'
+    groupIdValue = 'com.github.YingVickyCao'
     artifactIdValue = 'SimplePermissions'
     versionValue = '0.1'
 

@@ -1,0 +1,65 @@
+apply plugin: 'maven-publish'
+
+android {
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = groupIdValue
+                artifactId = artifactIdValue
+                version = versionValue
+
+                pom {
+                    name = libraryNameValue
+                    description = libraryDescValue
+                    url = siteUrl
+                    licenses {
+                        license {
+                            name = licenseName
+                            url = licenseUrl
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = developerId
+                            name = developerName
+                            email = developerEmail
+                        }
+                    }
+                    scm {
+                        connection = gitUrl
+                        developerConnection = gitUrl
+                        url = siteUrl
+                    }
+                }
+            }
+        }
+    }
+    // Disable publishing test fixtures of release variant
+//    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
+//    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
+}
+
+
+/**
+ * This uses the same plugin with PublishToMavenLocal.gradle
+ * Because it is published to public, it uses provides more information.
+ * Ref:
+ * https://docs.gradle.org/current/userguide/publishing_maven.html#publishing_maven:complete_example
+ *
+ * Before publish to Jitpack, test if can publish to local first.
+ * gradle :lib:publishToMavenLocal
+ * /
+ * ./gradlew publishReleasePublicationToMavenLocal
+ * https://docs.jitpack.io/android/#publish-an-android-library
+ * */

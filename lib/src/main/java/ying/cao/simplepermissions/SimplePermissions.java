@@ -3,8 +3,11 @@ package ying.cao.simplepermissions;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -15,10 +18,9 @@ import java.util.Arrays;
 public class SimplePermissions {
     public static final String TAG = "SimplePermissions";
 
-    private final FragmentActivity mActivity;
     private final PermissionsFragment mPermissionsFragment;
 
-    private final String PERMISSION_NOT_VALID = "No permissions to request";
+    private static final String PERMISSION_NOT_VALID = "No permissions to request";
 
     @IntDef({SHOULD, NEVER, ALWAYS})
     @Retention(RetentionPolicy.SOURCE)
@@ -66,21 +68,33 @@ public class SimplePermissions {
     }
 
 
+    @MainThread
     public SimplePermissions(FragmentActivity activity) {
-        mActivity = activity;
-        mPermissionsFragment = getRxPermissionsFragment(activity);
+        mPermissionsFragment = getPermissionsFragment(activity.getSupportFragmentManager());
+    }
+    
+    @MainThread
+    public SimplePermissions(Fragment fragment) {
+        mPermissionsFragment = getPermissionsFragment(fragment.getChildFragmentManager());
     }
 
+    /**
+     * Use Rationale {@link #SHOULD} behaviour,when request unrequested permissions, show the rational context UI to user if should.
+     *
+     * @param callback    the callback for requesting unrequested permissions
+     * @param permissions the request unrequested permissions
+     */
     public void request(IPermissionCallback callback, String... permissions) {
         request(SHOULD, callback, permissions);
     }
 
-    class InvalidPermissions extends RuntimeException {
-        public InvalidPermissions(String message) {
-            super(message);
-        }
-    }
-
+    /**
+     * When request unrequested permissions,according to your rationaleBehaviour value (one of  {@link #SHOULD}, {@link #NEVER}, or {@link #ALWAYS}  rationale behaviour), shows rationale or not.
+     *
+     * @param rationaleBehaviour one of  {@link #SHOULD}, {@link #NEVER}, or {@link #ALWAYS}  rationale behaviour
+     * @param callback           the callback for requesting unrequested permissions
+     * @param permissions        the request unrequested permissions
+     */
     public void request(@Rationale int rationaleBehaviour, IPermissionCallback callback, String... permissions) {
         if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
             throw new InvalidPermissions(PERMISSION_NOT_VALID);
@@ -100,6 +114,23 @@ public class SimplePermissions {
         }
     }
 
+    /**
+     * When request unrequested permissions,never show rational context UI (use {@link #NEVER}}
+     *
+     * @param callback    the callback for requesting unrequested permissions
+     * @param permissions the request unrequested permissions
+     */
+    public void request(IPurePermissionCallback callback, final String... permissions) {
+        if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
+            throw new InvalidPermissions(PERMISSION_NOT_VALID);
+        }
+        try {
+            requestPermissions(callback, permissions);
+        } catch (Exception ex) {
+            mPermissionsFragment.log(Arrays.toString(permissions) + ",ex:" + ex);
+        }
+    }
+
     private void doRequestPermissions(IPermissionCallback callback, String... permissions) {
         request(new IPurePermissionCallback() {
             @Override
@@ -114,17 +145,6 @@ public class SimplePermissions {
         }, permissions);
     }
 
-    public void request(IPurePermissionCallback callback, final String... permissions) {
-        if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
-            throw new InvalidPermissions(PERMISSION_NOT_VALID);
-        }
-        try {
-            requestPermissions(callback, permissions);
-        } catch (Exception ex) {
-            mPermissionsFragment.log(Arrays.toString(permissions) + ",ex:" + ex);
-        }
-    }
-
     public boolean isGranted(final String... permissions) {
         if (mPermissionsFragment.isPermissionsEmpty(permissions)) {
             throw new InvalidPermissions(PERMISSION_NOT_VALID);
@@ -137,20 +157,15 @@ public class SimplePermissions {
         return true;
     }
 
-    private PermissionsFragment getRxPermissionsFragment(FragmentActivity activity) {
-        PermissionsFragment fragment = findPermissionsFragment(activity);
+    private PermissionsFragment getPermissionsFragment(@NonNull FragmentManager fragmentManager) {
+        PermissionsFragment fragment = (PermissionsFragment) fragmentManager.findFragmentByTag(TAG);
         boolean isNewInstance = (fragment == null);
-        if (isNewInstance) {
-            fragment = new PermissionsFragment();
-            FragmentManager fragmentManager = activity.getSupportFragmentManager();
-            fragmentManager.beginTransaction().add(fragment, TAG).commitAllowingStateLoss();
-            fragmentManager.executePendingTransactions();
+        if (!isNewInstance) {
+            return fragment;
         }
+        fragment = new PermissionsFragment();
+        fragmentManager.beginTransaction().add(fragment, TAG).commitNow();
         return fragment;
-    }
-
-    private PermissionsFragment findPermissionsFragment(FragmentActivity activity) {
-        return (PermissionsFragment) activity.getSupportFragmentManager().findFragmentByTag(TAG);
     }
 
     private void requestPermissions(IPurePermissionCallback callback, String... unrequestedPermissions) {
@@ -167,7 +182,7 @@ public class SimplePermissions {
     }
 
     private boolean isGranted(final String permission) {
-        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(mActivity, permission);
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(mPermissionsFragment.requireActivity(), permission);
     }
 
     public boolean shouldShowRequestPermissionRationale(final String... permissions) {
@@ -183,6 +198,12 @@ public class SimplePermissions {
     }
 
     private boolean shouldShowPermissionRequestPermissionRationale(final String permission) {
-        return !isGranted() && ActivityCompat.shouldShowRequestPermissionRationale(mActivity, permission);
+        return !isGranted() && ActivityCompat.shouldShowRequestPermissionRationale(mPermissionsFragment.requireActivity(), permission);
+    }
+
+    private class InvalidPermissions extends RuntimeException {
+        public InvalidPermissions(String message) {
+            super(message);
+        }
     }
 }

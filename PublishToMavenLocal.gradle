@@ -1,0 +1,34 @@
+apply plugin: 'maven-publish'
+
+android {
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = groupIdValue
+                artifactId = artifactIdValue
+                version = versionValue
+
+            }
+        }
+    }
+    // Disable publishing test fixtures of release variant
+    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
+    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
+}
+
+/**
+ * library can be installed to mavenLocal ($HOME/.m2/repository):
+ * gradle :lib:publishToMavenLocal
+ * /
+ * ./gradlew publishReleasePublicationToMavenLocal
+ */

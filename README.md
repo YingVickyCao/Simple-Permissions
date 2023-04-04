@@ -169,9 +169,9 @@ void requestPermission(SimplePermissions simplePermissions, final String... perm
 }
 ```
 
-# [Releases](./Releases.md)
+# [Releases](./doc/Releases.md)
 
-# [FAQ](./FAQ.md)
+# [FAQ](./doc/FAQ.md)
 
 # License
 

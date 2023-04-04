@@ -23,20 +23,23 @@ dependencies {
 
 # 2 Usage
 
-## 2.1 Create a `SimplePermissions` instance :
+- Step 1 : Create a `SimplePermissions` instance :
 
 ```java
 // where this is an Activity or Fragment instance
 final SimplePermissions simplePermissions = new SimplePermissions(this);
 ```
 
-**NOTE:**
+**NOTE:**  
+(1) `new SimplePermissions(this)` the `this` parameter can be a FragmentActivity or a Fragment.  
+(2) When in a fragment, should use `new SimplePermissions(this)` instead of `(fragment.getActivity())`, or may have `java.lang.IllegalStateException: FragmentManager is already executing transactions`.
 
-1. `new SimplePermissions(this)` the `this` parameter can be a FragmentActivity or a Fragment.<br/>
+- Step 2 : Example : if want to request `Manifest.permission.RECORD_AUDIO`
 
-2) When in a fragment, should use `new SimplePermissions(this)` instead of `(fragment.getActivity())`, or may have `java.lang.IllegalStateException: FragmentManager is already executing transactions`.
-
-## 2.2 Example : if want to request `Manifest.permission.RECORD_AUDIO`
+```xml
+<!-- First, Add RECORD_AUDIO permission to your AndroidManifest.xml -->
+<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+```
 
 ```java
 // Example 1 :// when request runtime permission, show rational to user when should
@@ -165,6 +168,10 @@ void requestPermission(SimplePermissions simplePermissions, final String... perm
     }, permissions);
 }
 ```
+
+# [Releases](./Releases.md)
+
+# [FAQ](./FAQ.md)
 
 # License
 

@@ -72,7 +72,7 @@ public class SimplePermissions {
     public SimplePermissions(FragmentActivity activity) {
         mPermissionsFragment = getPermissionsFragment(activity.getSupportFragmentManager());
     }
-
+    
     @MainThread
     public SimplePermissions(Fragment fragment) {
         mPermissionsFragment = getPermissionsFragment(fragment.getChildFragmentManager());

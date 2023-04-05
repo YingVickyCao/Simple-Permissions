@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Map;
 
-class PermissionsFragment extends Fragment {
+public class PermissionsFragment extends Fragment {
     private static final String TAG = "PermissionsFragment";
     private boolean mLogging = true;
 
@@ -65,7 +65,7 @@ class PermissionsFragment extends Fragment {
     }
 
     boolean isPermissionsEmpty(String[] unrequestedPermissions) {
-        return null != unrequestedPermissions && unrequestedPermissions.length > 0;
+        return null == unrequestedPermissions || unrequestedPermissions.length == 0;
     }
 
     public void log(String message) {

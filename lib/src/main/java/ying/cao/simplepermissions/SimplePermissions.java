@@ -198,7 +198,7 @@ public class SimplePermissions {
     }
 
     private boolean shouldShowPermissionRequestPermissionRationale(final String permission) {
-        return !isGranted() && ActivityCompat.shouldShowRequestPermissionRationale(mPermissionsFragment.requireActivity(), permission);
+        return !isGranted(permission) && ActivityCompat.shouldShowRequestPermissionRationale(mPermissionsFragment.requireActivity(), permission);
     }
 
     private class InvalidPermissions extends RuntimeException {

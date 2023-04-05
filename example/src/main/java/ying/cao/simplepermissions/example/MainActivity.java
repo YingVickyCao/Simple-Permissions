@@ -46,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
             public void denied() {
                 Toast.makeText(MainActivity.this, "Denied", Toast.LENGTH_SHORT).show();
             }
-        }, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }, Manifest.permission.RECORD_AUDIO);
     }
 
     private void requestRuntimePermission2() {
         SimplePermissions simplePermissions = new SimplePermissions(MainActivity.this);
-        String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+        String[] permissions = {Manifest.permission.RECORD_AUDIO};
         if (simplePermissions.isGranted(permissions)) {
             Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();
             return;

@@ -16,7 +16,7 @@ public class PermissionsFragment extends Fragment {
     private boolean mLogging = true;
 
     ActivityResultLauncher<String[]> mResultLauncher;
-    RequestPermissionResultCallback mCallback;
+    SimplePermissions.RequestPermissionResultCallback mCallback;
 
     public void setLogging(boolean logging) {
         mLogging = logging;
@@ -33,7 +33,7 @@ public class PermissionsFragment extends Fragment {
         return registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
             @Override
             public void onActivityResult(Map<String, Boolean> permissionsResult) {
-                mCallback.checkResult(isAllGranted(permissionsResult));
+                mCallback.onResult(isAllGranted(permissionsResult));
             }
         });
     }
@@ -55,7 +55,7 @@ public class PermissionsFragment extends Fragment {
         mResultLauncher.launch(unrequestedPermissions);
     }
 
-    public void requestPermissions(final RequestPermissionResultCallback callback, final String... unrequestedPermissions) {
+    public void requestPermissions(final SimplePermissions.RequestPermissionResultCallback callback, final String... unrequestedPermissions) {
         if (isPermissionsEmpty(unrequestedPermissions)) {
             log("No permission to request");
             return;
@@ -74,7 +74,4 @@ public class PermissionsFragment extends Fragment {
         }
     }
 
-    interface RequestPermissionResultCallback {
-        void checkResult(boolean isGranted);
-    }
 }

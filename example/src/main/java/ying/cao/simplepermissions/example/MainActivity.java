@@ -48,41 +48,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }, Manifest.permission.RECORD_AUDIO);
     }
-
-    private void requestRuntimePermission2() {
-        SimplePermissions simplePermissions = new SimplePermissions(MainActivity.this);
-        String[] permissions = {Manifest.permission.RECORD_AUDIO};
-        if (simplePermissions.isGranted(permissions)) {
-            Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (simplePermissions.shouldShowRequestPermissionRationale(permissions)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Request permission")
-                    .setMessage("Permission " + permissions.toString())
-                    .setPositiveButton(getString(R.string.ok), (dialog, which) -> requestPermission(simplePermissions, permissions))
-                    .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
-                    })
-                    .setNeutralButton(getString(R.string.skip), (dialog, which) -> {
-                    })
-                    .create().show();
-        } else {
-            requestPermission(simplePermissions, permissions);
-        }
-    }
-
-    void requestPermission(SimplePermissions simplePermissions, final String... permissions) {
-        simplePermissions.request(new SimplePermissions.IPurePermissionCallback() {
-            @Override
-            public void granted() {
-                Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void denied() {
-                Toast.makeText(MainActivity.this, "Denied", Toast.LENGTH_SHORT).show();
-            }
-        }, permissions);
-
-    }
 }

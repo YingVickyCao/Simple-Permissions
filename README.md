@@ -1,6 +1,7 @@
 # SimplePermissions
 
-[![](https://jitpack.io/v/YingVickyCao/SimplePermissions.svg)](https://jitpack.io/#YingVickyCao/SimplePermissions)
+[![](https://jitpack.io/v/yingvickycao/simplepermissions.svg)](https://jitpack.io/#yingvickycao/simplepermissions)
+
 
 This library allows to request runtime permission.
 
@@ -17,9 +18,11 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.yingvickycao:SimplePermissions:0.1'
+    implementation 'com.github.yingvickycao:simplepermissions:0.2'
 }
 ```
+
+Ref : https://jitpack.io/#yingvickycao/simplepermissions/v0.2
 
 # 2 Usage
 
@@ -44,12 +47,11 @@ final SimplePermissions simplePermissions = new SimplePermissions(this);
 ```java
 // Example 1 :// when request runtime permission, show rational to user when should
 
-simplePermissions.request(new SimplePermissions.IPermissionCallback() {
-
-    // If needs show the rational context UI, override showRationaleContextUI to show your custom rational to user.
-    // This is also Android recommended method: show rational to user when should.
+simplePermissions.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback() {
     @Override
     public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
+        // If needs show the rational context UI, override showRationaleContextUI to show your custom rational to user.
+        // This is also Android recommended method: show rational to user when should.
         // disolay rational context UI to user
         Log.d(SimplePermissions.TAG, "showRationaleContextUI: ");
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -74,99 +76,6 @@ simplePermissions.request(new SimplePermissions.IPermissionCallback() {
         Toast.makeText(this.getContext, "Gant failed", Toast.LENGTH_SHORT).show();
     }
 }, Manifest.permission.RECORD_AUDIO);
-```
-
-```java
-// when request runtime permission, you can  also use this way if want to show rational to user when should.
-simplePermissions.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback() {
-    @Override
-    public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
-       // disolay rational context UI to user
-    }
-
-    @Override
-    public void granted() {
-        // TODO:  do your thing after granted permission
-    }
-
-    @Override
-    public void denied() {
-        // TODO:  do your thing after denied permission
-    }
-}, Manifest.permission.RECORD_AUDIO);
-```
-
-```java
-// Example 2 : when request runtime permission, never show rationale context UI to user
-simplePermissions.request(SimplePermissions.NEVER, new SimplePermissions.IPermissionCallback() {
-    @Override
-    public void granted() {
-        // TODO:  do your thing after granted permission
-    }
-
-    @Override
-    public void denied() {
-        // TODO:  do your thing after denied permission
-    }
-}, Manifest.permission.RECORD_AUDIO);
-
-```
-
-```java
-// Example 3 : when request runtime permission, always show rationale context UI to user
-simplePermissions.request(SimplePermissions.ALWAYS, new SimplePermissions.IPermissionCallback() {
-    @Override
-    public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
-       // disolay rational context UI to user
-    }
-
-    @Override
-    public void granted() {
-        // TODO:  do your thing after granted permission
-    }
-
-    @Override
-    public void denied() {
-        // TODO:  do your thing after denied permission
-    }
-}, Manifest.permission.RECORD_AUDIO);
-```
-
-```java
-// Example 4 : You can also use simplePermissions step by step
-private void requestRuntimePermission2() {
-    SimplePermissions simplePermissions = new SimplePermissions(this);
-    String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-    if (simplePermissions.isGranted(permissions)) {
-        Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();
-        return;
-    }
-    if (simplePermissions.shouldShowRequestPermissionRationale(permissions)) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activityContext);
-        builder.setTitle("Request permission")
-                .setMessage("Permission " + permissions.toString())
-                .setPositiveButton(getString(R.string.ok), (dialog, which) -> requestPermission(simplePermissions, permissions))
-                .setNegativeButton(getString(R.string.cancel), null)
-                .setNeutralButton(getString(R.string.skip), null)
-                .create().show();
-    } else {
-        requestPermission(simplePermissions, permissions);
-    }
-}
-
-void requestPermission(SimplePermissions simplePermissions, final String... permissions) {
-    simplePermissions.request(new SimplePermissions.IPurePermissionCallback() {
-        @Override
-        public void granted() {
-            // TODO:  do your thing after granted permission
-        }
-
-        @Override
-        public void denied() {
-            // TODO:  do your thing after denied permission
-        }
-    }, permissions);
-}
 ```
 
 # [Releases](./doc/Releases.md)

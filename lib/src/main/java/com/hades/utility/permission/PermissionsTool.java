@@ -1,4 +1,4 @@
-package ying.cao.simplepermissions;
+package com.hades.permission;
 
 import android.content.pm.PackageManager;
 import android.util.Log;

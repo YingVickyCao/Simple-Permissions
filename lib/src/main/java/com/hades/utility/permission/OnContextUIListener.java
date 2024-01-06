@@ -1,8 +1,11 @@
-package ying.cao.simplepermissions;
+package com.hades.utility.permission;
 
 public interface OnRationaleClickListener {
     /**
      * Called when click ok on Rationale UI
      */
-    void onClick();
+    void ok();
+
+    void cancel();
+
 }

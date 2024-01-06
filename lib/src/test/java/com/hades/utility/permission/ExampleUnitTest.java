@@ -1,4 +1,4 @@
-package ying.cao.permission;
+package com.hades.permission;
 
 import org.junit.Test;
 

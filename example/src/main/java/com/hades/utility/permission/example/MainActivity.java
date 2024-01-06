@@ -1,4 +1,4 @@
-package ying.cao.permission.example;
+package com.hades.utility.permission;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -8,9 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import ying.cao.simplepermissions.OnRationaleClickListener;
-import ying.cao.simplepermissions.OnResultCallback;
-import ying.cao.simplepermissions.PermissionsTool;
+import com.hades.utility.permission.example.R;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

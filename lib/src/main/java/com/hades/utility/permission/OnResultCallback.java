@@ -1,4 +1,4 @@
-package ying.cao.simplepermissions;
+package com.hades.permission;
 
 public interface OnResultCallback {
     void showRationale(OnRationaleClickListener callback);

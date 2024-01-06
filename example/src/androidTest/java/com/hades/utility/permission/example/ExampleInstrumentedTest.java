@@ -1,4 +1,4 @@
-package com.hades.utility.permission;
+package com.hades.utility.permission.example;
 
 import android.content.Context;
 

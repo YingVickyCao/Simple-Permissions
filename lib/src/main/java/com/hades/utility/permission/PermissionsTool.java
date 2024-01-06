@@ -1,4 +1,4 @@
-package com.hades.permission;
+package com.hades.utility.permission;
 
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -10,7 +10,9 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -20,16 +22,31 @@ import java.util.Map;
  */
 public class PermissionsTool {
     public static final String TAG = "SimplePermissions";
-    private FragmentActivity activity;
 
     private static final String EX_PERMISSION_NOT_VALID = "No permissions to request";
     private static final String EX_ACTIVITY_NULL = "activity is null";
 
-    private ActivityResultLauncher<String[]> mResultLauncher;
+    private final PermissionsFragment mPermissionsFragment;
 
     @MainThread
-    public PermissionsTool(FragmentActivity activity) throws NullPointerException {
-        this.activity = activity;
+    public PermissionsTool(FragmentActivity activity) {
+        mPermissionsFragment = getPermissionsFragment(activity.getSupportFragmentManager());
+    }
+
+    @MainThread
+    public PermissionsTool(Fragment fragment) {
+        mPermissionsFragment = getPermissionsFragment(fragment.getChildFragmentManager());
+    }
+
+    private PermissionsFragment getPermissionsFragment(@NonNull FragmentManager fragmentManager) {
+        PermissionsFragment fragment = (PermissionsFragment) fragmentManager.findFragmentByTag(TAG);
+        boolean isNewInstance = (fragment == null);
+        if (!isNewInstance) {
+            return fragment;
+        }
+        fragment = new PermissionsFragment();
+        fragmentManager.beginTransaction().add(fragment, TAG).commitNow();
+        return fragment;
     }
 
     /**
@@ -44,7 +61,7 @@ public class PermissionsTool {
             Log.e(TAG, "request: " + EX_PERMISSION_NOT_VALID);
             return;
         }
-        if (null == activity) {
+        if (null == mPermissionsFragment.getActivity()) {
             callback.onError(EX_ACTIVITY_NULL);
             Log.e(TAG, "request: " + EX_ACTIVITY_NULL);
             return;
@@ -53,9 +70,18 @@ public class PermissionsTool {
             if (isGranted(permissions)) {
                 callback.granted();
                 return;
-            }
-            if (shouldShowRationale(permissions)) {
-                callback.showRationale(() -> requestPermissions(callback, permissions));
+            } else if (shouldShowRationale(permissions)) {
+                callback.showInContextUI(new OnContextUIListener() {
+                    @Override
+                    public void ok() {
+                        requestPermissions(callback, permissions);
+                    }
+
+                    @Override
+                    public void cancel() {
+                        callback.denied();
+                    }
+                });
                 return;
             }
             requestPermissions(callback, permissions);
@@ -65,28 +91,17 @@ public class PermissionsTool {
         }
     }
 
-    /**
-     * Clear the resource
-     */
-    public void clear() {
-        activity = null;
-    }
-
     private void requestPermissions(@NonNull OnResultCallback callback, final @NonNull String[] permissions) {
-        mResultLauncher = activity.registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+        mPermissionsFragment.requestPermissions(permissions, new ActivityResultCallback<Map<String, Boolean>>() {
             @Override
-            public void onActivityResult(Map<String, Boolean> permissionsResult) {
-                boolean result = isAllGranted(permissionsResult);
-                if (result) {
+            public void onActivityResult(Map<String, Boolean> result) {
+                if (isAllGranted(result)) {
                     callback.granted();
                 } else {
                     callback.denied();
                 }
-                mResultLauncher.unregister();
-                mResultLauncher = null;
             }
         });
-        mResultLauncher.launch(permissions);
     }
 
     private boolean isGranted(final String[] permissions) {
@@ -99,7 +114,7 @@ public class PermissionsTool {
     }
 
     private boolean isGranted(final String permission) {
-        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(activity, permission);
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(mPermissionsFragment.getActivity(), permission);
     }
 
     private boolean shouldShowRationale(final @NonNull String[] permissions) {
@@ -112,7 +127,7 @@ public class PermissionsTool {
     }
 
     private boolean shouldShowRationale(final String permission) {
-        return !isGranted(permission) && ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+        return !isGranted(permission) && ActivityCompat.shouldShowRequestPermissionRationale(mPermissionsFragment.getActivity(), permission);
     }
 
     private boolean isAllGranted(Map<String, Boolean> permissionsResult) {

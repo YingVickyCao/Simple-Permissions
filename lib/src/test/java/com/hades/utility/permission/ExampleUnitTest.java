@@ -1,4 +1,4 @@
-package com.hades.permission;
+package com.hades.utility.permission;
 
 import org.junit.Test;
 

@@ -18,38 +18,13 @@ afterEvaluate {
                 groupId = groupIdValue
                 artifactId = artifactIdValue
                 version = versionValue
-
-                pom {
-                    name = libraryNameValue
-                    description = libraryDescValue
-                    url = siteUrl
-                    licenses {
-                        license {
-                            name = licenseName
-                            url = licenseUrl
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = developerId
-                            name = developerName
-                            email = developerEmail
-                        }
-                    }
-                    scm {
-                        connection = gitUrl
-                        developerConnection = gitUrl
-                        url = siteUrl
-                    }
-                }
             }
         }
     }
-    // Disable publishing test fixtures of release variant
+// Disable publishing test fixtures of release variant
 //    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
 //    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
 }
-
 
 /**
  * This uses the same plugin with PublishToMavenLocal.gradle

@@ -1,4 +1,4 @@
-package ying.cao.simplepermissions;
+package ying.cao.permission;
 
 import android.content.Context;
 

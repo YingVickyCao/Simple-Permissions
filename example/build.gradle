@@ -7,7 +7,6 @@ android {
     namespace 'ying.cao.simplepermissions.example'
 
     compileSdk 33
-    buildToolsVersion '33.0.1'
 
     defaultConfig {
         applicationId 'ying.cao.simplepermissions.example'

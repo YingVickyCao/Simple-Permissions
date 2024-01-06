@@ -30,7 +30,7 @@ Ref : https://jitpack.io/#yingvickycao/simplepermissions/v0.2
 
 ```java
 // where this is an Activity or Fragment instance
-final SimplePermissions simplePermissions = new SimplePermissions(this);
+final SimplePermissions permissionsTool = new SimplePermissions(this);
 ```
 
 **NOTE:**  
@@ -47,7 +47,7 @@ final SimplePermissions simplePermissions = new SimplePermissions(this);
 ```java
 // Example 1 :// when request runtime permission, show rational to user when should
 
-simplePermissions.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback() {
+permissionsTool.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback() {
     @Override
     public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
         // If needs show the rational context UI, override showRationaleContextUI to show your custom rational to user.

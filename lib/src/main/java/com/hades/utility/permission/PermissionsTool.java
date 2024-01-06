@@ -50,7 +50,7 @@ public class PermissionsTool {
     }
 
     /**
-     * When request unrequested permissions
+     * Request runtime permissions
      *
      * @param callback    the callback for requesting unrequested permissions
      * @param permissions the request unrequested permissions

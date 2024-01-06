@@ -7,13 +7,24 @@ public interface OnResultCallback {
      * In this UI, include a "cancel" or "no thanks" button that lets the user continue
      * using your app without granting the permission.
      *
-     * @param callback
+     * @param callback Rationale UI listener
      */
     void showInContextUI(OnContextUIListener callback);
 
+    /**
+     * Request runtime permission successfully.
+     */
     void granted();
 
+    /**
+     * Deny on runtime permission request.
+     */
     void denied();
 
+    /**
+     * Error occurred on runtime permission request.
+     *
+     * @param message error message
+     */
     void onError(String message);
 }

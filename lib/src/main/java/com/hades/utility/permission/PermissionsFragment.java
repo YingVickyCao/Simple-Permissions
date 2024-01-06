@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Map;
 
-public class PermissionsFragment extends Fragment {
+final class PermissionsFragment extends Fragment {
     private static final String TAG = "PermissionsFragment";
     private ActivityResultLauncher<String[]> mResultLauncher;
     private ActivityResultCallback<Map<String, Boolean>> mCallback;

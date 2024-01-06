@@ -9,9 +9,9 @@ ext {
     // com.hades.utility.permission
     groupIdValue = 'com.hades'
     artifactIdValue = 'utility-permission'
-    versionValue = '0.1'
+    versionValue = '0.1.1'
 
-    libraryNameValue = 'SimplePermissions'
+    libraryNameValue = 'permission'
     libraryDescValue = 'This library allows to request runtime permission'
 
     licenseName = 'The Apache License, Version 2.0'

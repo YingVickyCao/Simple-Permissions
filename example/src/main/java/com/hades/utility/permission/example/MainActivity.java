@@ -1,4 +1,4 @@
-package ying.cao.simplepermissions.example;
+package com.hades.utility.permission.example;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -8,9 +8,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import ying.cao.simplepermissions.SimplePermissions;
+import com.hades.utility.permission.OnContextUIListener;
+import com.hades.utility.permission.OnResultCallback;
+import com.hades.utility.permission.PermissionsTool;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,17 +26,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestRuntimePermission() {
-        SimplePermissions simplePermissions = new SimplePermissions(this);
-        simplePermissions.request(SimplePermissions.SHOULD, new SimplePermissions.IPermissionCallback() {
+        PermissionsTool permissionsTool = new PermissionsTool(this);
+        permissionsTool.request(new String[]{Manifest.permission.RECORD_AUDIO}, new OnResultCallback() {
             @Override
-            public void showRationaleContextUI(SimplePermissions.OnRationaleClickListener rationaleOnClickListener) {
-                Log.d(SimplePermissions.TAG, "showRationaleContextUI: ");
+            public void showInContextUI(OnContextUIListener listener) {
+                Log.d(PermissionsTool.TAG, "showRationaleContextUI: ");
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Request permission").setMessage("Permission Audio / SD")
-                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> rationaleOnClickListener.onClick())
+                        .setPositiveButton(getString(R.string.ok), (dialog, which) -> listener.ok())
                         .setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
+                            listener.cancel();
                         })
                         .setNeutralButton(getString(R.string.skip), (dialog, which) -> {
+                            listener.cancel();
                         }).create().show();
             }
 
@@ -46,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
             public void denied() {
                 Toast.makeText(MainActivity.this, "Denied", Toast.LENGTH_SHORT).show();
             }
-        }, Manifest.permission.RECORD_AUDIO);
+
+            @Override
+            public void onError(String message) {
+                Log.e(TAG, "onError: " + message);
+            }
+        });
     }
 }

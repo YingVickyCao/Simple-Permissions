@@ -1,4 +1,4 @@
-package com.hades.utility.permission;
+package com.hades.utility.permission.inner;
 
 import android.os.Bundle;
 import android.util.Log;

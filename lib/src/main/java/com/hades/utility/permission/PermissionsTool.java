@@ -1,19 +1,11 @@
 package com.hades.utility.permission;
 
-import android.content.pm.PackageManager;
-import android.util.Log;
-
-import androidx.activity.result.ActivityResultCallback;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
-import java.util.Arrays;
-import java.util.Map;
+import com.hades.utility.permission.inner.PermissionsToolImpl;
 
 // https://developer.android.google.cn/training/permissions/requesting
 

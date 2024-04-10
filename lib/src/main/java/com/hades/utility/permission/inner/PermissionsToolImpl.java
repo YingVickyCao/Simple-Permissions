@@ -1,4 +1,4 @@
-package com.hades.utility.permission;
+package com.hades.utility.permission.inner;
 
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -11,6 +11,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+
+import com.hades.utility.permission.OnContextUIListener;
+import com.hades.utility.permission.OnResultCallback;
 
 import java.util.Arrays;
 import java.util.Map;

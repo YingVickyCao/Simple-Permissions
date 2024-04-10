@@ -35,7 +35,7 @@ final class PermissionsFragment extends Fragment {
         mResultLauncher = null;
     }
 
-    public void requestPermissions(final String[] unrequestedPermissions, @NonNull final ActivityResultCallback<Map<String, Boolean>> callback) {
+    void requestPermissions(final String[] unrequestedPermissions, @NonNull final ActivityResultCallback<Map<String, Boolean>> callback) {
         mCallback = callback;
         mResultLauncher.launch(unrequestedPermissions);
     }

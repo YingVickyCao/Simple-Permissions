@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         permissionsTool.request(new String[]{Manifest.permission.RECORD_AUDIO}, new OnResultCallback() {
             @Override
             public void showInContextUI(OnContextUIListener listener) {
-                Log.d(PermissionsTool.TAG, "showRationaleContextUI: ");
+                Log.d(TAG, "showRationaleContextUI: ");
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Request permission").setMessage("Permission Audio / SD")
                         .setPositiveButton(getString(R.string.ok), (dialog, which) -> listener.ok())
@@ -43,17 +43,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void granted() {
+            public void onPermissionGranted() {
                 Toast.makeText(MainActivity.this, "Granted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void denied() {
+            public void onPermissionDenied() {
                 Toast.makeText(MainActivity.this, "Denied", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onError(String message) {
+            public void onPermissionRequestError(String message) {
                 Log.e(TAG, "onError: " + message);
             }
         });

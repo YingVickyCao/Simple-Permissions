@@ -12,19 +12,21 @@ public interface OnResultCallback {
     void showInContextUI(OnContextUIListener callback);
 
     /**
-     * Request runtime permission successfully.
+     * Runtime permission is granted.
+     * This function invoked if user has granted the permission before, or user chooses "allow" on the system permission dialog
      */
-    void granted();
+    void onPermissionGranted();
 
     /**
-     * Deny on runtime permission request.
+     * Runtime permission us denied.
+     * This function invoked if user chooses "cancel" on rationale UI, or user chooses "Not allow" on system permission dialog.
      */
-    void denied();
+    void onPermissionDenied();
 
     /**
      * Error occurred on runtime permission request.
      *
      * @param message error message
      */
-    void onError(String message);
+    void onPermissionRequestError(String message);
 }

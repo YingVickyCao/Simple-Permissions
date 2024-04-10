@@ -1,4 +1,4 @@
-package com.hades.utility.permission.inner;
+package com.hades.utility.permission;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +12,13 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Map;
 
-final class PermissionsFragment extends Fragment {
+public class PermissionsFragment extends Fragment {
     private static final String TAG = "PermissionsFragment";
     private ActivityResultLauncher<String[]> mResultLauncher;
     private ActivityResultCallback<Map<String, Boolean>> mCallback;
+
+    public PermissionsFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

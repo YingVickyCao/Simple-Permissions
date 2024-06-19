@@ -21,9 +21,6 @@ afterEvaluate {
             }
         }
     }
-    // Disable publishing test fixtures of release variant
-    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseApiPublication) { skip() }
-    components.release.withVariantsFromConfiguration(configurations.releaseTestFixturesVariantReleaseRuntimePublication) { skip() }
 }
 
 /**

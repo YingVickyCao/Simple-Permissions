@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-//apply from: '../PublishToMavenLocal.gradle'
-apply from: '../PushToJitpack.gradle'
+apply from: '../PublishToMavenLocal.gradle'
+//apply from: '../PushToJitpack.gradle'
 
 android {
     namespace 'com.hades.utility.permission'

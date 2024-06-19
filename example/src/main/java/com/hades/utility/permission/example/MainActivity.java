@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hades.utility.permission.OnContextUIListener;
-import com.hades.utility.permission.OnResultCallback;
+import com.hades.utility.permission.OnPermissionResultCallback;
 import com.hades.utility.permission.PermissionsTool;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestRuntimePermission() {
         PermissionsTool permissionsTool = new PermissionsTool(this);
-        permissionsTool.request(new String[]{Manifest.permission.RECORD_AUDIO}, new OnResultCallback() {
+        permissionsTool.request(new String[]{Manifest.permission.RECORD_AUDIO}, new OnPermissionResultCallback() {
             @Override
             public void showInContextUI(OnContextUIListener listener) {
                 Log.d(TAG, "showRationaleContextUI: ");
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPermissionRequestError(String message) {
+            public void onPermissionError(String message) {
                 Log.e(TAG, "onError: " + message);
             }
         });

@@ -55,14 +55,14 @@ public class PermissionsTool {
      * @param callback    the callback for requesting unrequested permissions
      * @param permissions the request unrequested permissions
      */
-    public void request(final @NonNull String[] permissions, @NonNull OnResultCallback callback) {
+    public void request(final @NonNull String[] permissions, @NonNull OnPermissionResultCallback callback) {
         if (permissions.length == 0) {
-            callback.onPermissionRequestError(EX_PERMISSION_NOT_VALID);
+            callback.onPermissionError(EX_PERMISSION_NOT_VALID);
             Log.e(TAG, "request: " + EX_PERMISSION_NOT_VALID);
             return;
         }
         if (null == mPermissionsFragment.getActivity()) {
-            callback.onPermissionRequestError(EX_ACTIVITY_NULL);
+            callback.onPermissionError(EX_ACTIVITY_NULL);
             Log.e(TAG, "request: " + EX_ACTIVITY_NULL);
             return;
         }
@@ -74,7 +74,7 @@ public class PermissionsTool {
                 callback.showInContextUI(new OnContextUIListener() {
                     @Override
                     public void ok() {
-                        requestPermissions(permissions, callback);
+                        request(permissions, callback);
                     }
 
                     @Override
@@ -84,14 +84,14 @@ public class PermissionsTool {
                 });
                 return;
             }
-            requestPermissions(permissions, callback);
+            request(permissions, callback);
         } catch (Exception ex) {
             Log.e(TAG, "request permission " + Arrays.toString(permissions) + "occurred error", ex);
-            callback.onPermissionRequestError("request permission " + Arrays.toString(permissions) + "occurred error:" + ex.getMessage());
+            callback.onPermissionError("request permission " + Arrays.toString(permissions) + "occurred error:" + ex.getMessage());
         }
     }
 
-    public void requestPermissions(final @NonNull String[] permissions, @NonNull OnResultCallback callback) {
+    public void request(final @NonNull String[] permissions, @NonNull OnSimplePermissionCallback callback) {
         mPermissionsFragment.requestPermissions(permissions, new ActivityResultCallback<Map<String, Boolean>>() {
             @Override
             public void onActivityResult(Map<String, Boolean> result) {

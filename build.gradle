@@ -9,7 +9,7 @@ ext {
     // com.hades.utility.permission
     groupIdValue = 'com.hades'
     artifactIdValue = 'utility-permission'
-    versionValue = '0.1.2'
+    versionValue = '0.1.3'
 
     libraryNameValue = 'permission'
     libraryDescValue = 'This library allows to request runtime permission'

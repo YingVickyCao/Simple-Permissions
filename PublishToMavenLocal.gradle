@@ -18,6 +18,10 @@ afterEvaluate {
                 artifactId = artifactIdValue
                 version = versionValue
 
+                print("groupId=" + groupId)
+                print("artifactId=" + artifactIdValue)
+                print("version=" + version)
+
             }
         }
     }

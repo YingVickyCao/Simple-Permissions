@@ -67,14 +67,14 @@ public class PermissionsTool {
             return;
         }
         try {
-            if (isPermissionsAllGranted(permissions)) {
+            if (isGranted(permissions)) {
                 callback.onPermissionGranted();
                 return;
             } else if (isShouldShowRationale(permissions)) {
                 callback.showInContextUI(new OnContextUIListener() {
                     @Override
                     public void ok() {
-                        requestPermissions(callback, permissions);
+                        requestPermissions(permissions, callback);
                     }
 
                     @Override
@@ -84,14 +84,14 @@ public class PermissionsTool {
                 });
                 return;
             }
-            requestPermissions(callback, permissions);
+            requestPermissions(permissions, callback);
         } catch (Exception ex) {
             Log.e(TAG, "request permission " + Arrays.toString(permissions) + "occurred error", ex);
             callback.onPermissionRequestError("request permission " + Arrays.toString(permissions) + "occurred error:" + ex.getMessage());
         }
     }
 
-    private void requestPermissions(@NonNull OnResultCallback callback, final @NonNull String[] permissions) {
+    public void requestPermissions(final @NonNull String[] permissions, @NonNull OnResultCallback callback) {
         mPermissionsFragment.requestPermissions(permissions, new ActivityResultCallback<Map<String, Boolean>>() {
             @Override
             public void onActivityResult(Map<String, Boolean> result) {
@@ -104,7 +104,7 @@ public class PermissionsTool {
         });
     }
 
-    private boolean isPermissionsAllGranted(final String[] permissions) {
+    public boolean isGranted(final String[] permissions) {
         for (String permission : permissions) {
             if (!isPermissionAllGranted(permission)) {
                 return false;
@@ -117,7 +117,7 @@ public class PermissionsTool {
         return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(mPermissionsFragment.getActivity(), permission);
     }
 
-    private boolean isShouldShowRationale(final @NonNull String[] permissions) {
+    public boolean isShouldShowRationale(final @NonNull String[] permissions) {
         for (String p : permissions) {
             if (isShouldShowRationale(p)) {
                 return true;

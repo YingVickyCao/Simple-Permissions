@@ -84,7 +84,6 @@ public class PermissionsTool {
                 });
                 return;
             }
-            request(permissions, callback);
         } catch (Exception ex) {
             Log.e(TAG, "request permission " + Arrays.toString(permissions) + "occurred error", ex);
             callback.onPermissionError("request permission " + Arrays.toString(permissions) + "occurred error:" + ex.getMessage());

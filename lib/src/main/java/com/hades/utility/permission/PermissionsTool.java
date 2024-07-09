@@ -70,11 +70,12 @@ public class PermissionsTool {
             if (isGranted(permissions)) {
                 callback.onPermissionGranted();
                 return;
-            } else if (isShouldShowRationale(permissions)) {
+            }
+            if (isShouldShowRationale(permissions)) {
                 callback.showInContextUI(new OnContextUIListener() {
                     @Override
                     public void ok() {
-                        request(permissions, callback);
+                        doRequest(permissions, callback);
                     }
 
                     @Override
@@ -82,7 +83,8 @@ public class PermissionsTool {
                         callback.onPermissionDenied();
                     }
                 });
-                return;
+            } else {
+                doRequest(permissions, callback);
             }
         } catch (Exception ex) {
             Log.e(TAG, "request permission " + Arrays.toString(permissions) + "occurred error", ex);
@@ -91,6 +93,10 @@ public class PermissionsTool {
     }
 
     public void request(final @NonNull String[] permissions, @NonNull OnSimplePermissionCallback callback) {
+        doRequest(permissions, callback);
+    }
+
+    public void doRequest(final @NonNull String[] permissions, @NonNull OnSimplePermissionCallback callback) {
         mPermissionsFragment.requestPermissions(permissions, new ActivityResultCallback<Map<String, Boolean>>() {
             @Override
             public void onActivityResult(Map<String, Boolean> result) {
